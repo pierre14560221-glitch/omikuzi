@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>お肴亭のおみくじ</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --pudding-bg: #fff7d1;
+      --pudding-deep: #f1d37a;
+      --pudding-soft: #ffe7a6;
+      --choco: #5c4630;
+      --choco-soft: #6b5847;
+      --panel-bg: #fffaf0;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Zen Maru Gothic", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #fffbe2 0, var(--pudding-bg) 55%, #fef3cf 100%);
+      color: var(--choco-soft);
+    }
+
+    .page-container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 16px 40px;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin: 0 0 10px;
+      color: var(--choco);
+    }
+
+    p {
+      margin: 0 0 12px;
+    }
+
+    .top-links {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .link-button {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: #fff5cf;
+      border: 2px solid #e3c88a;
+      color: #3d2b16;
+      text-decoration: none;
+      box-shadow: 0 3px 0 rgba(92, 70, 48, 0.18);
+    }
+
+    .link-button:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 0 rgba(92, 70, 48, 0.18);
+    }
+
+    .omikuji-inner {
+      margin-top: 8px;
+      padding: 18px 12px 20px;
+      border-radius: 20px;
+      background: var(--panel-bg);
+      box-shadow: 0 4px 14px rgba(92, 70, 48, 0.15);
+      text-align: center;
+      min-height: 280px;
+      position: relative;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .omikuji-main-icon {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .omikuji-main-icon img {
+      width: 220px;
+      max-width: 75%;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .omikuji-choice-row {
+      display: none;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .omikuji-choice {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .omikuji-choice img {
+      width: 140px;
+      max-width: 35vw;
+      display: block;
+    }
+
+    .omikuji-result {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      margin-top: 8px;
+    }
+
+    .omikuji-result-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+
+    .omikuji-result img {
+      max-width: 42%;
+      height: auto;
+      opacity: 0;
+      transform: scale(0.96);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .omikuji-result img.is-show {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .omikuji-inner.is-selecting {
+      background-image: url("img/omikuzi_sentaku.png");
+      background-color: transparent;
+    }
+
+    .omikuji-inner.is-result {
+      background: #ffffff;
+    }
+
+    .omikuji-about-trigger {
+      margin-top: 10px;
+      font-size: 0.95rem;
+      color: var(--choco);
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+      text-decoration: underline;
+    }
+
+    .omikuji-about-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      color: #ffffff;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .omikuji-about-content {
+      max-width: 680px;
+      margin: 16px;
+      padding: 18px 20px 16px;
+      border-radius: 14px;
+      background: #111111;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+
+    .omikuji-about-title {
+      margin: 0 0 8px;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .omikuji-about-close {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid #ffffff;
+      background: transparent;
+      color: #ffffff;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .omikuji-about-close:active {
+      transform: translateY(1px);
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <div class="top-links">
+      <a class="link-button" href="index.html">トップへ戻る</a>
+    </div>
+
+    <h1>お肴亭のおみくじ</h1>
+    <p>アイコンをタップして、おみくじを引いてみよう。</p>
+
+    <div class="omikuji-inner" id="omikuji-inner">
+      <button class="omikuji-main-icon" id="omikuji-start">
+        <img src="img/omikuzi_icon.png" alt="おみくじ">
+      </button>
+
+      <div class="omikuji-choice-row" id="omikuji-choices">
+        <button class="omikuji-choice" data-choice="1">
+          <img src="img/omikuzi_icon1.png" alt="おみくじ1">
+        </button>
+        <button class="omikuji-choice" data-choice="2">
+          <img src="img/omikuzi_icon2.png" alt="おみくじ2">
+        </button>
+        <button class="omikuji-choice" data-choice="3">
+          <img src="img/omikuzi_icon3.png" alt="おみくじ3">
+        </button>
+      </div>
+
+      <div class="omikuji-result" id="omikuji-result">
+        <div class="omikuji-result-inner">
+          <img src="" alt="おみくじ結果" id="omikuji-result-image">
+          <img src="" alt="おみくじキャラ" id="omikuji-result-chara">
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="omikuji-about-trigger" id="omikuji-about-open">
+      ＞おみくじについて
+    </button>
+  </div>
+
+  <div class="omikuji-about-overlay" id="omikuji-about-overlay">
+    <div class="omikuji-about-content">
+      <p class="omikuji-about-title">おみくじについて（ご利用にあたってのお願い）</p>
+      <p>
+このおみくじは 非公式のファンメイド作品 です。
+
+おみくじ結果のスクリーンショットを撮って友人に見せたり、結果共有を目的としてSNSに投稿することは問題ありません。
+お気軽に楽しんでください。
+
+ただし、
+・Dr.STONE公式アカウントの投稿へのリプライへ使用する
+（公式へ直接届ける形で共有する行為）
+・公式ハッシュタグ（#DrSTONE）を付けて投稿する
+
+といった使い方は、恐れ入りますがお控えいただけますと幸いです🙇‍♂️
+
+今後もおみくじの種類を増やしていきますので、
+引き続きゆる～く遊んでいただけたら嬉しいです👍
+      </p>
+      <button type="button" class="omikuji-about-close" id="omikuji-about-close">
+        ＞戻る
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const omikujiInner       = document.getElementById("omikuji-inner");
+    const omikujiStart       = document.getElementById("omikuji-start");
+    const omikujiChoices     = document.getElementById("omikuji-choices");
+    const omikujiResult      = document.getElementById("omikuji-result");
+    const omikujiResultImage = document.getElementById("omikuji-result-image");
+    const omikujiResultChara = document.getElementById("omikuji-result-chara");
+
+    if (omikujiStart) {
+      omikujiStart.addEventListener("click", () => {
+        omikujiInner.classList.add("is-selecting");
+        omikujiInner.classList.remove("is-result");
+        omikujiStart.style.display  = "none";
+        omikujiResult.style.display = "none";
+        omikujiChoices.style.display = "flex";
+      });
+    }
+
+    if (omikujiChoices) {
+      omikujiChoices.addEventListener("click", (event) => {
+        const choiceBtn = event.target.closest(".omikuji-choice");
+        if (!choiceBtn) return;
+
+        const n = Math.floor(Math.random() * 4) + 1;
+        const k = Math.floor(Math.random() * 3) + 1;
+
+        omikujiResultImage.src = `img/omikuzi_kekka_${n}.png`;
+        omikujiResultChara.src = `img/omikuzi_kekka_kyara_${k}.png`;
+
+        omikujiResultImage.classList.remove("is-show");
+        omikujiResultChara.classList.remove("is-show");
+
+        omikujiInner.classList.remove("is-selecting");
+        omikujiInner.classList.add("is-result");
+        omikujiChoices.style.display = "none";
+        omikujiResult.style.display  = "flex";
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            omikujiResultImage.classList.add("is-show");
+            omikujiResultChara.classList.add("is-show");
+          });
+        });
+      });
+    }
+
+    const aboutOpen    = document.getElementById("omikuji-about-open");
+    const aboutOverlay = document.getElementById("omikuji-about-overlay");
+    const aboutClose   = document.getElementById("omikuji-about-close");
+
+    if (aboutOpen && aboutOverlay && aboutClose) {
+      aboutOpen.addEventListener("click", () => {
+        aboutOverlay.style.display = "flex";
+      });
+
+      aboutClose.addEventListener("click", () => {
+        aboutOverlay.style.display = "none";
+      });
+
+      aboutOverlay.addEventListener("click", (event) => {
+        if (event.target === aboutOverlay) {
+          aboutOverlay.style.display = "none";
+        }
+      });
+    }
+  </script>
+</body>
+</html>
