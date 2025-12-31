@@ -32,22 +32,16 @@
       padding: 24px 16px 40px;
     }
 
-    h1 {
-      font-size: 1.8rem;
-      margin: 0 0 10px;
-      color: var(--choco);
-    }
-
     p {
       margin: 0 0 12px;
     }
 
-
-    .top-links {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      margin-bottom: 12px;
+    .title-image {
+      display: block;
+      width: 360px;
+      max-width: 90%;
+      height: auto;
+      margin: 0 0 10px;
     }
 
     .link-button {
@@ -65,7 +59,6 @@
       transform: translateY(1px);
       box-shadow: 0 2px 0 rgba(92, 70, 48, 0.18);
     }
-
 
     .bottom-links {
       margin-top: 20px;
@@ -139,33 +132,30 @@
       flex-wrap: wrap;
     }
 
-.omikuji-result img {
-  max-width: 42%;
-  height: auto;
+    .omikuji-result img {
+      max-width: 42%;
+      height: auto;
+      opacity: 0;
+      clip-path: inset(0 0 100% 0);
+      transform: translateY(-6px);
+    }
 
-  opacity: 0;
-  clip-path: inset(0 0 100% 0);
-  transform: translateY(-6px);
-}
+    .omikuji-result img.is-show {
+      animation: revealDown 3.2s ease forwards;
+    }
 
-.omikuji-result img.is-show {
-  animation: revealDown 2s ease forwards;
-}
-
-
-@keyframes revealDown {
-  from {
-    opacity: 0;
-    clip-path: inset(0 0 100% 0);
-    transform: translateY(-6px);
-  }
-  to {
-    opacity: 1;
-    clip-path: inset(0 0 0 0);
-    transform: translateY(0);
-  }
-}
-
+    @keyframes revealDown {
+      from {
+        opacity: 0;
+        clip-path: inset(0 0 100% 0);
+        transform: translateY(-6px);
+      }
+      to {
+        opacity: 1;
+        clip-path: inset(0 0 0 0);
+        transform: translateY(0);
+      }
+    }
 
     .omikuji-inner.is-selecting {
       background-image: url("img/omikuzi_sentaku.png");
@@ -237,8 +227,8 @@
 <body>
   <div class="page-container">
 
+    <img src="img/osakanateinoomikuzi.png" alt="お肴亭のおみくじ" class="title-image">
 
-    <h1>お肴亭のおみくじ</h1>
     <p>⚠音が出ます</p>
 
     <div class="omikuji-inner" id="omikuji-inner">
@@ -270,7 +260,6 @@
       ＞おみくじについて
     </button>
 
-
     <div class="bottom-links">
       <a class="link-button" href="https://pierre14560221-glitch.github.io/pierre_log/">サイトへ戻る</a>
     </div>
@@ -301,7 +290,6 @@
       </button>
     </div>
   </div>
-
 
   <audio id="bgm" src="audio/PerituneMaterial_TaishoRoman_Theme2.mp3" preload="auto" loop></audio>
   <audio id="jingle" src="audio/PerituneMaterial.mp3" preload="auto"></audio>
@@ -357,27 +345,27 @@
         omikujiResultImage.src = `img/omikuzi_kekka_${n}.png`;
         omikujiResultChara.src = `img/omikuzi_kekka_kyara_${k}.png`;
 
-      omikujiResultImage.classList.remove("is-show");
-      omikujiResultChara.classList.remove("is-show");
-      
-      omikujiInner.classList.remove("is-selecting");
-      omikujiInner.classList.add("is-result");
-      omikujiChoices.style.display = "none";
-      omikujiResult.style.display  = "flex";
-      
-      stopAudio(bgm);
-      if (jingle) {
-        jingle.currentTime = 0;
-        safePlay(jingle);
-      }
-      
-      void omikujiResultImage.offsetWidth;
-      void omikujiResultChara.offsetWidth;
-      
-      requestAnimationFrame(() => {
-        omikujiResultImage.classList.add("is-show");
-        omikujiResultChara.classList.add("is-show");
-      });
+        omikujiResultImage.classList.remove("is-show");
+        omikujiResultChara.classList.remove("is-show");
+
+        omikujiInner.classList.remove("is-selecting");
+        omikujiInner.classList.add("is-result");
+        omikujiChoices.style.display = "none";
+        omikujiResult.style.display  = "flex";
+
+        stopAudio(bgm);
+        if (jingle) {
+          jingle.currentTime = 0;
+          safePlay(jingle);
+        }
+
+        void omikujiResultImage.offsetWidth;
+        void omikujiResultChara.offsetWidth;
+
+        requestAnimationFrame(() => {
+          omikujiResultImage.classList.add("is-show");
+          omikujiResultChara.classList.add("is-show");
+        });
       });
     }
 
