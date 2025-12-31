@@ -211,7 +211,8 @@
 <body>
   <div class="page-container">
     <div class="top-links">
-      <a class="link-button" href="index.html">トップへ戻る</a>
+    
+      <a class="link-button" href="https://pierre14560221-glitch.github.io/pierre_log/">サイトへ戻る</a>
     </div>
 
     <h1>お肴亭のおみくじ</h1>
@@ -272,6 +273,10 @@
     </div>
   </div>
 
+
+  <audio id="bgm" src="audio/PerituneMaterial_TaishoRoman_Theme2.mp3" preload="auto" loop></audio>
+  <audio id="jingle" src="audio/PerituneMaterial.mp3" preload="auto"></audio>
+
   <script>
     const omikujiInner       = document.getElementById("omikuji-inner");
     const omikujiStart       = document.getElementById("omikuji-start");
@@ -280,8 +285,33 @@
     const omikujiResultImage = document.getElementById("omikuji-result-image");
     const omikujiResultChara = document.getElementById("omikuji-result-chara");
 
+    const bgm    = document.getElementById("bgm");
+    const jingle = document.getElementById("jingle");
+
+    function safePlay(audioEl) {
+      if (!audioEl) return;
+      const p = audioEl.play();
+      if (p && typeof p.catch === "function") {
+        p.catch(() => {
+
+        });
+      }
+    }
+
+    function stopAudio(audioEl) {
+      if (!audioEl) return;
+      audioEl.pause();
+      audioEl.currentTime = 0;
+    }
+
     if (omikujiStart) {
       omikujiStart.addEventListener("click", () => {
+  
+        if (bgm) {
+          bgm.currentTime = 0;
+          safePlay(bgm);
+        }
+
         omikujiInner.classList.add("is-selecting");
         omikujiInner.classList.remove("is-result");
         omikujiStart.style.display  = "none";
@@ -308,6 +338,13 @@
         omikujiInner.classList.add("is-result");
         omikujiChoices.style.display = "none";
         omikujiResult.style.display  = "flex";
+
+
+        stopAudio(bgm);
+        if (jingle) {
+          jingle.currentTime = 0;
+          safePlay(jingle);
+        }
 
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
