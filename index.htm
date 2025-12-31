@@ -325,8 +325,8 @@
         const choiceBtn = event.target.closest(".omikuji-choice");
         if (!choiceBtn) return;
 
-        const n = Math.floor(Math.random() * 4) + 1;
-        const k = Math.floor(Math.random() * 3) + 1;
+        const n = Math.floor(Math.random() * 13) + 1;
+        const k = Math.floor(Math.random() * 12) + 1;
 
         omikujiResultImage.src = `img/omikuzi_kekka_${n}.png`;
         omikujiResultChara.src = `img/omikuzi_kekka_kyara_${k}.png`;
